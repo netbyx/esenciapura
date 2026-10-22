@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESCENCIA PURA</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            color: #000000;
+            overflow: hidden;
+        }
+
+        /* --- HERO PORTADA --- */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
+        }
+
+        @media (min-width: 768px) {
+            .hero {
+                flex-direction: row;
+            }
+        }
+
+        .hero-image {
+            flex: 1;
+            background: #e5e5e5 url('https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=1000&auto=format&fit=crop') center/cover no-repeat;
+            min-height: 45vh;
+        }
+
+        @media (min-width: 768px) {
+            .hero-image {
+                min-height: 100vh;
+            }
+        }
+
+        .hero-content {
+            flex: 1;
+            background-color: #d9d9d9;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            font-weight: 800;
+            max-width: 320px;
+            line-height: 1.3;
+            margin-bottom: 2.5rem;
+        }
+
+        .btn-explore {
+            background-color: #d0dbe5;
+            color: #000000;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        /* --- CATALOGO --- */
+        .catalog-container {
+            display: none;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 4.5rem 1rem 3rem 1rem;
+        }
+
+        .catalog-inner {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.8rem;
+        }
+
+        .product-img {
+            width: 80px;
+            height: 90px;
+            object-fit: contain;
+            margin-right: 15px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .product-name {
+            font-size: 1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .btn-info {
+            background-color: #000000;
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        /* --- CARRITO FLOTANTE EN LA ESQUINA SUPERIOR DERECHA --- */
+        .top-cart-btn {
+            display: none;
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            z-index: 50;
+            width: 45px;
+            height: 45px;
+            background-color: #a3e3d3;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transition: transform 0.1s ease;
+        }
+
+        .top-cart-btn:active {
+            transform: scale(0.95);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background-color: #ff3b30;
+            color: white;
+            font-size: 0.75rem;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-weight: bold;
+        }
+
+        /* --- MODALES --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            max-width: 360px;
+            width: 90%;
+            text-align: center;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .modal-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .option-btn {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .option-btn:hover {
+            background-color: #e2e2e2;
+        }
+
+        .btn-close {
+            background-color: #888;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        /* --- CARRITO LISTA --- */
+        .cart-list {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .cart-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+
+        .btn-remove {
+            background-color: #ff3b30;
+            color: white;
+            border: none;
+            padding: 2px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cart-total {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin: 1rem 0;
+            text-align: right;
+        }
+
+        .btn-checkout {
+            background-color: #25d366;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PORTADA -->
+    <section class="hero" id="heroSection">
+        <div class="hero-image"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">ESCENCIA PURA</h1>
+            <p class="hero-subtitle">TU FRAGANCIA FAVORITA EN EL TAMAÑO PERFECTO</p>
+            <button class="btn-explore" onclick="showCatalog()">explorar el catalogo</button>
+        </div>
+    </section>
+
+    <!-- CARRITO ARRIBA A LA DERECHA -->
+    <div class="top-cart-btn" id="topCartBtn" onclick="openCartModal()">
+        🛒
+        <span class="cart-count" id="cartBadge">0</span>
+    </div>
+
+    <!-- CATALOGO DE FRAGANCIAS -->
+    <div class="catalog-container" id="catalogContainer">
+        <div class="catalog-inner">
+
+            <div class="product-item">
+                <img src="asad.jpg" onerror="this.src='https://via.placeholder.com/80x90?text=ASAD'" class="product-img" alt="Lattafa Asad">
+                <div class="product-info">
+                    <span class="product-name">LATTAFA ASAD</span>
+                    <button class="btn-info" onclick="openModal('LATTAFA ASAD', 4500, 9000)">VER INFO</button>
+                </div>
+            </div>
+
+            <div class="product-item">
+                <img src="khamrah.jpg" onerror="this.src='https://via.placeholder.com/80x90?text=KHAMRAH'" class="product-img" alt="Lattafa Khamrah">
+                <div class="product-info">
+                    <span class="product-name">LATTAFA KHAMRAH</span>
+                    <button class="btn-info" onclick="openModal('LATTAFA KHAMRAH', 3000, 6000)">VER INFO</button>
+                </div>
+            </div>
+
+            <div class="product-item">
+                <img src="9pm.jpg" onerror="this.src='https://via.placeholder.com/80x90?text=9PM'" class="product-img" alt="Afnan 9PM">
+                <div class="product-info">
+                    <span class="product-name">AFNAN 9PM</span>
+                    <button class="btn-info" onclick="openModal('AFNAN 9PM', 4500, 9000)">VER INFO</button>
+                </div>
+            </div>
+
+            <div class="product-item">
+                <img src="jpg.jpg" onerror="this.src='https://via.placeholder.com/80x90?text=JPG'" class="product-img" alt="JPG Le Male">
+                <div class="product-info">
+                    <span class="product-name">JEAN PAUL GAULTIER LE MALE LE PERFUM</span>
+                    <button class="btn-info" onclick="openModal('JEAN PAUL GAULTIER LE MALE LE PERFUM', 5000, 10000)">VER INFO</button>
+                </div>
+            </div>
+
+            <div class="product-item">
+                <img src="mega.jpg" onerror="this.src='https://via.placeholder.com/80x90?text=MEGA'" class="product-img" alt="Armaf Odyssey Mega">
+                <div class="product-info">
+                    <span class="product-name">ARMAF ODYSSEY MEGA</span>
+                    <button class="btn-info" onclick="openModal('ARMAF ODYSSEY MEGA', 3000, 6000)">VER INFO</button>
+                </div>
+            </div>
+
+            <div class="product-item">
+                <img src="liquid.jpg" onerror="this.src='https://via.placeholder.com/80x90?text=LIQUID'" class="product-img" alt="French Avenue Liquid Brun">
+                <div class="product-info">
+                    <span class="product-name">FRENCH AVENUE LIQUID BRUN</span>
+                    <button class="btn-info" onclick="openModal('FRENCH AVENUE LIQUID BRUN', 3500, 7000)">VER INFO</button>
+                </div>
+            </div>
+
+            <div class="product-item">
+                <img src="decant.jpg" onerror="this.src='https://via.placeholder.com/80x90?text=DECANT'" class="product-img" alt="Decant">
+                <div class="product-info">
+                    <span class="product-name">DECANT</span>
+                    <button class="btn-info" onclick="openModal('DECANT (Frasco Genérico)', 600, 1200)">VER INFO</button>
+                </div>
+            </div>
+
+            <div class="product-item">
+                <img src="mandarine.jpg" onerror="this.src='https://via.placeholder.com/80x90?text=MANDARINE'" class="product-img" alt="Mandarine Sky">
+                <div class="product-info">
+                    <span class="product-name">ARMAF ODYSSEY MANDARINE SKY</span>
+                    <button class="btn-info" onclick="openModal('ARMAF ODYSSEY MANDARINE SKY', 3000, 6000)">VER INFO</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL DE SELECCION (5ml / 10ml) -->
+    <div class="modal" id="infoModal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="modalProductName">Nombre Fragancia</h3>
+            <p style="margin-bottom: 1rem; font-size: 0.95rem; color: #555;">Toca para agregar al carrito:</p>
+            <div class="modal-options">
+                <button class="option-btn" onclick="addToCart(currentPerfume, '5ml', currentPrice5)">
+                    <span>5 ml</span> <span id="lbl5ml">₡0</span>
+                </button>
+                <button class="option-btn" onclick="addToCart(currentPerfume, '10ml', currentPrice10)">
+                    <span>10 ml</span> <span id="lbl10ml">₡0</span>
+                </button>
+            </div>
+            <button class="btn-close" onclick="closeModal('infoModal')">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- MODAL DEL CARRITO DE COMPRAS -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <h3 class="modal-title">Tu Carrito de Compras</h3>
+            <ul class="cart-list" id="cartItemsList">
+                <li style="text-align: center; color: #888; padding: 1rem;">El carrito está vacío</li>
+            </ul>
+            <div class="cart-total" id="cartTotalText">Total: ₡0</div>
+            <button class="btn-checkout" onclick="sendOrder()">Enviar Pedido por WhatsApp</button>
+            <br>
+            <button class="btn-close" onclick="closeModal('cartModal')">Seguir viendo</button>
+        </div>
+    </div>
+
+    <script>
+        let cart = [];
+        let currentPerfume = '';
+        let currentPrice5 = 0;
+        let currentPrice10 = 0;
+
+        function showCatalog() {
+            document.getElementById('heroSection').style.display = 'none';
+            document.getElementById('catalogContainer').style.display = 'block';
+            document.getElementById('topCartBtn').style.display = 'flex';
+        }
+
+        function openModal(name, price5, price10) {
+            currentPerfume = name;
+            currentPrice5 = price5;
+            currentPrice10 = price10;
+
+            document.getElementById('modalProductName').innerText = name;
+            document.getElementById('lbl5ml').innerText = `₡${price5.toLocaleString()}`;
+            document.getElementById('lbl10ml').innerText = `₡${price10.toLocaleString()}`;
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function addToCart(name, size, price) {
+            cart.push({ name, size, price });
+            updateCartBadge();
+            closeModal('infoModal');
+            alert(`¡Agregado al carrito: ${name} (${size})!`);
+        }
+
+        function updateCartBadge() {
+            document.getElementById('cartBadge').innerText = cart.length;
+        }
+
+        function openCartModal() {
+            const list = document.getElementById('cartItemsList');
+            const totalText = document.getElementById('cartTotalText');
+
+            if (cart.length === 0) {
+                list.innerHTML = `<li style="text-align: center; color: #888; padding: 1rem;">El carrito está vacío</li>`;
+                totalText.innerText = `Total: ₡0`;
+            } else {
+                let total = 0;
+                list.innerHTML = cart.map((item, idx) => {
+                    total += item.price;
+                    return `
+                        <li class="cart-item-row">
+                            <div>
+                                <strong>${item.name}</strong><br>
+                                <small>${item.size} - ₡${item.price.toLocaleString()}</small>
+                            </div>
+                            <button class="btn-remove" onclick="removeFromCart(${idx})">X</button>
+                        </li>
+                    `;
+                }).join('');
+                totalText.innerText = `Total: ₡${total.toLocaleString()}`;
+            }
+
+            document.getElementById('cartModal').style.display = 'flex';
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartBadge();
+            openCartModal();
+        }
+
+        function sendOrder() {
+            if (cart.length === 0) {
+                alert("El carrito está vacío.");
+                return;
+            }
+            let msg = "¡Hola! Quisiera realizar el siguiente pedido en *Esencia Pura*:\n\n";
+            let total = 0;
+            cart.forEach(item => {
+                msg += `- ${item.name} (${item.size}) : ₡${item.price.toLocaleString()}\n`;
+                total += item.price;
+            });
+            msg += `\n*Total a pagar: ₡${total.toLocaleString()}*`;
+
+            const phone = "50670268027"; // Tu WhatsApp aquí
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
